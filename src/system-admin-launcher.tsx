@@ -3,14 +3,14 @@ import{createClient}from'@supabase/supabase-js';
 import{ShieldCheck,X}from'lucide-react';
 import{SystemAdmin}from'./modules/system-admin';
 
-const db=createClient(import.meta.env.VITE_SUPABASE_URL||'https://pescjtca ggyyafulstkl.supabase.co'.replace(' ',''),import.meta.env.VITE_SUPABASE_ANON_KEY||'');
+const db=createClient(import.meta.env.VITE_SUPABASE_URL||'https://pescjtcaggyyafulstkl.supabase.co',import.meta.env.VITE_SUPABASE_ANON_KEY||'sb_publishable_vJdmMRw1nZdAE_mucqlECQ_cFAyqn1S');
 
 export default function SystemAdminLauncher(){
  const[allowed,setAllowed]=useState(false),[open,setOpen]=useState(false),[email,setEmail]=useState('');
  useEffect(()=>{let live=true;(async()=>{
-   const{data:{session}}=await db.auth.getSession(); if(!session)return;
+   const{data:{session}}=await db.auth.getSession();if(!session)return;
    if(live)setEmail(session.user.email||'');
-   const{data:identity}=await db.from('system_admin_identities').select('id').eq('auth_user_id',session.user.id).eq('is_active',true).maybeSingle();
+   const{data:identity}=await db.from('system_admin_identities').select('id').eq('user_id',session.user.id).eq('is_active',true).maybeSingle();
    if(live)setAllowed(!!identity);
  })();return()=>{live=false}},[]);
  if(!allowed)return null;
