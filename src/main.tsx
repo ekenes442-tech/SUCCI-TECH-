@@ -1,3 +1,8 @@
-import React,{useEffect,useState}from'react';import{createRoot}from'react-dom/client';import{createClient}from'@supabase/supabase-js';import'./styles.css';
-const url=import.meta.env.VITE_SUPABASE_URL;const key=import.meta.env.VITE_SUPABASE_ANON_KEY;const supabase=url&&key?createClient(url,key):null;
-function App(){const[email,setEmail]=useState('');const[password,setPassword]=useState('');const[session,setSession]=useState<any>(null);const[loading,setLoading]=useState(false);const[error,setError]=useState('');useEffect(()=>{if(!supabase)return;supabase.auth.getSession().then(({data})=>setSession(data.session));const{data}=supabase.auth.onAuthStateChange((_e,s)=>setSession(s));return()=>data.subscription.unsubscribe()},[]);async function login(e:React.FormEvent){e.preventDefault();setError('');if(!supabase){setError('Supabase environment variables are not configured.');return}setLoading(true);const{error}=await supabase.auth.signInWithPassword({email,password});if(error)setError(error.message);setLoading(false)}async function logout(){await supabase?.auth.signOut()}if(session)return <main><section className="card"><div className="logo">SUCCI</div><h1>SUCCI TECH</h1><p>Signed in successfully.</p><button onClick={logout}>Sign out</button></section></main>;return <main><section className="card"><div className="logo">SUCCI</div><h1>SUCCI TECH</h1><p className="muted">Secure staff login</p><form onSubmit={login}><label>Email<input type="email" value={email} onChange={e=>setEmail(e.target.value)} required/></label><label>Password<input type="password" value={password} onChange={e=>setPassword(e.target.value)} required/></label>{error&&<div className="error">{error}</div>}<button disabled={loading}>{loading?'Signing in…':'Sign in'}</button></form></section></main>}createRoot(document.getElementById('root')!).render(<React.StrictMode><App/></React.StrictMode>);
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import App from './app';
+import './styles.css';
+
+const root = document.getElementById('root');
+if (!root) throw new Error('SUCCI TECH root element not found');
+createRoot(root).render(<React.StrictMode><App /></React.StrictMode>);
